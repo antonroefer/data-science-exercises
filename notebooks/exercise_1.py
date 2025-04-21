@@ -32,20 +32,23 @@ month_names = {
 monthly_avg_temp_dict = {
     month_names[month]: f"{temp} °C" for month, temp in monthly_avg_temp_rounded.items()
 }
-print(f"Monthly Average Temperatures: {monthly_avg_temp_dict}")
+for month, temp in monthly_avg_temp_dict.items():
+    print(f"{month}: {temp}")
 
-# Compare July (7) and May (5) average temperatures for statistical significance
-july_avg_temp = monthly_avg_temp.loc[7]
-may_avg_temp = monthly_avg_temp.loc[5]
+# Compare July (7) and May (5) average temperatures for statistical significance using t-test
+july_temps = data[data["month"] == 7]["Temperatur"]
+may_temps = data[data["month"] == 5]["Temperatur"]
 
-if not pd.isna(july_avg_temp) and not pd.isna(may_avg_temp):
-    print(f"July Average Temperature: {july_avg_temp:.2f} °C")
-    print(f"May Average Temperature: {may_avg_temp:.2f} °C")
-    percentage_difference = ((july_avg_temp - may_avg_temp) / may_avg_temp) * 100
-    print(
-        f"The percentage difference between July and May average temperatures is {percentage_difference:.2f}%."
-    )
+if not july_temps.empty and not may_temps.empty:
+    t_stat, p_value = ttest_ind(july_temps, may_temps, equal_var=False)
+    print(f"T-statistic: {t_stat:.2f}, P-value: {p_value:.4f}")
+    if p_value < 0.05:
+        print(
+            "The difference in average temperatures between July and May is statistically significant."
+        )
+    else:
+        print(
+            "The difference in average temperatures between July and May is not statistically significant."
+        )
 else:
-    print(
-        "Average temperature data for July or May is not available for percentage difference calculation."
-    )
+    print("Temperature data for July or May is not available for t-test calculation.")
