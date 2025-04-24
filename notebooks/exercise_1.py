@@ -2,7 +2,7 @@ import pandas as pd
 from scipy.stats import ttest_ind
 
 # Load the CSV file
-file_path = "data/external/wetter.csv"
+file_path = "./../data/external/wetter.csv"
 data = pd.read_csv(file_path)
 
 # Calculate the overall average temperature
